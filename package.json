@@ -1,9 +1,10 @@
 {
   "name": "egg-schedule",
-  "version": "3.3.0",
-  "description": "schedule plugin for egg, support corn job.",
+  "version": "1.0.0",
+  "description": "schedule plugin for egg, support corn job,schedule lock.",
   "eggPlugin": {
-    "name": "schedule"
+    "name": "lock-schedule",
+    "dependencies": [ "redis" ]
   },
   "files": [
     "app",
@@ -14,13 +15,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:eggjs/egg-schedule.git"
+    "url": "https://github.com/misterapp/egg-schedule.git"
   },
   "keywords": [
     "egg",
     "egg-plugin",
     "eggPlugin",
     "schedule",
+    "lock",
     "cron"
   ],
   "dependencies": {
@@ -54,6 +56,6 @@
     "version": "8, 9",
     "license": true
   },
-  "author": "dead_horse",
+  "author": "zengbaoqing<misterapptracy@gmail.com>",
   "license": "MIT"
 }

@@ -3,12 +3,22 @@
 const loadSchedule = require('./lib/load_schedule');
 const qs = require('querystring');
 const path = require('path');
+const loadRedisCommand = require('./lib/redisCommand');
 
 module.exports = app => {
   // don't redirect scheduleLogger
   app.loggers.scheduleLogger.unredirect('error');
-
+  loadRedisCommand(app);
   const schedules = loadSchedule(app);
+
+  // get schedule
+  const getScheduleByPath = schedulePath => {
+    if (!path.isAbsolute(schedulePath)) {
+      schedulePath = path.join(app.config.baseDir, 'app/schedule', schedulePath);
+    }
+    schedulePath = require.resolve(schedulePath);
+    return schedules[schedulePath] || null;
+  };
 
   // for test purpose
   app.runSchedule = schedulePath => {
@@ -16,18 +26,10 @@ module.exports = app => {
       schedulePath = path.join(app.config.baseDir, 'app/schedule', schedulePath);
     }
     schedulePath = require.resolve(schedulePath);
-    let schedule;
-
-    try {
-      schedule = schedules[schedulePath];
-      if (!schedule) {
-        throw new Error(`Cannot find schedule ${schedulePath}`);
-      }
-    } catch (err) {
-      err.message = `[egg-schedule] ${err.message}`;
-      return Promise.reject(err);
+    const schedule = getScheduleByPath(schedulePath);
+    if (!schedule) {
+      return Promise.reject(new Error(`[egg-schedule] Cannot find schedule ${schedulePath}`));
     }
-
     // run with anonymous context
     const ctx = app.createAnonymousContext({
       method: 'SCHEDULE',
@@ -37,6 +39,26 @@ module.exports = app => {
     return schedule.task(ctx);
   };
 
+  // disable schedule
+  app.disableSchedule = schedulePath => {
+    const schedule = getScheduleByPath(schedulePath);
+    if (!schedule) {
+      return Promise.reject(new Error(`[egg-schedule] Cannot find schedule ${schedulePath}`));
+    }
+    schedule.disable = true;
+    return Promise.resolve(true);
+  };
+
+  // enable schedule
+  app.enableSchedule = schedulePath => {
+    const schedule = getScheduleByPath(schedulePath);
+    if (!schedule) {
+      return Promise.reject(new Error(`[egg-schedule] Cannot find schedule ${schedulePath}`));
+    }
+    schedule.disable = false;
+    return Promise.resolve(true);
+  };
+
   // log schedule list
   for (const s in schedules) {
     const schedule = schedules[s];
@@ -44,10 +66,11 @@ module.exports = app => {
   }
 
   // register schedule event
-  app.messenger.on('egg-schedule', data => {
+  app.messenger.on('egg-schedule', async data => {
     const id = data.id;
     const key = data.key;
     const schedule = schedules[key];
+    const { lockType, lockKey, disable, isLock } = schedule;
     const logger = app.loggers.scheduleLogger;
     logger.info(`[${id}] ${key} task received by app`);
 
@@ -56,8 +79,22 @@ module.exports = app => {
       return;
     }
     /* istanbul ignore next */
-    if (schedule.schedule.disable) return;
+    if (disable) return;
 
+    // if process lock is enabled
+    if (lockType === 'process') {
+      if (isLock) {
+        return;
+      }
+      schedule.isLock = true;
+    }
+    // if global lock is enabled
+    if (lockType === 'global') {
+      if (await app.redis.isGlobalLock(lockKey)) {
+        return;
+      }
+      await app.redis.set(lockKey, 1);
+    }
     // run with anonymous context
     const ctx = app.createAnonymousContext({
       method: 'SCHEDULE',
@@ -76,7 +113,15 @@ module.exports = app => {
         app.logger.error(err);
         return false; // failed
       })
-      .then(success => {
+      .then(async success => {
+        // if process lock is enabled
+        if (lockType === 'process') {
+          schedule.isLock = false;
+        }
+        // if global lock is enabled
+        if (lockType === 'global') {
+          await app.redis.set(lockKey, 0);
+        }
         const rt = Date.now() - start;
         const status = success ? 'succeed' : 'failed';
         ctx.coreLogger.info(`[egg-schedule] ${key} execute ${status}, used ${rt}ms`);
