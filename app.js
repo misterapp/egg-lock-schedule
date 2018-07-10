@@ -28,7 +28,7 @@ module.exports = app => {
     schedulePath = require.resolve(schedulePath);
     const schedule = getScheduleByPath(schedulePath);
     if (!schedule) {
-      return Promise.reject(new Error(`[egg-lock-schedule] Cannot find schedule ${schedulePath}`));
+      return Promise.reject(new Error(`[egg-schedule] Cannot find schedule ${schedulePath}`));
     }
     // run with anonymous context
     const ctx = app.createAnonymousContext({
@@ -43,7 +43,7 @@ module.exports = app => {
   app.disableSchedule = schedulePath => {
     const schedule = getScheduleByPath(schedulePath);
     if (!schedule) {
-      return Promise.reject(new Error(`[egg-lock-schedule] Cannot find schedule ${schedulePath}`));
+      return Promise.reject(new Error(`[egg-schedule] Cannot find schedule ${schedulePath}`));
     }
     schedule.disable = true;
     return Promise.resolve(true);
@@ -53,7 +53,7 @@ module.exports = app => {
   app.enableSchedule = schedulePath => {
     const schedule = getScheduleByPath(schedulePath);
     if (!schedule) {
-      return Promise.reject(new Error(`[egg-lock-schedule] Cannot find schedule ${schedulePath}`));
+      return Promise.reject(new Error(`[egg-schedule] Cannot find schedule ${schedulePath}`));
     }
     schedule.disable = false;
     return Promise.resolve(true);
@@ -62,11 +62,11 @@ module.exports = app => {
   // log schedule list
   for (const s in schedules) {
     const schedule = schedules[s];
-    if (!schedule.schedule.disable) app.coreLogger.info('[egg-lock-schedule]: register schedule %s', schedule.key);
+    if (!schedule.schedule.disable) app.coreLogger.info('[egg-schedule]: register schedule %s', schedule.key);
   }
 
   // register schedule event
-  app.messenger.on('egg-lock-schedule', async data => {
+  app.messenger.on('egg-schedule', async data => {
     const id = data.id;
     const key = data.key;
     const schedule = schedules[key];
@@ -109,7 +109,7 @@ module.exports = app => {
       .then(() => true) // succeed
       .catch(err => {
         logger.error(`[${id}] ${key} execute error.`, err);
-        err.message = `[egg-lock-schedule] ${key} execute error. ${err.message}`;
+        err.message = `[egg-schedule] ${key} execute error. ${err.message}`;
         app.logger.error(err);
         return false; // failed
       })
@@ -124,7 +124,7 @@ module.exports = app => {
         }
         const rt = Date.now() - start;
         const status = success ? 'succeed' : 'failed';
-        ctx.coreLogger.info(`[egg-lock-schedule] ${key} execute ${status}, used ${rt}ms`);
+        ctx.coreLogger.info(`[egg-schedule] ${key} execute ${status}, used ${rt}ms`);
         logger[success ? 'info' : 'error'](`[${id}] ${key} execute ${status}, used ${rt}ms`);
       });
   });

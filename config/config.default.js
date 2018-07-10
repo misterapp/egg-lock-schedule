@@ -8,7 +8,7 @@ module.exports = appInfo => {
   config.customLogger = {
     scheduleLogger: {
       consoleLevel: 'NONE',
-      file: path.join(appInfo.root, 'logs', appInfo.name, 'egg-lock-schedule.log'),
+      file: path.join(appInfo.root, 'logs', appInfo.name, 'egg-schedule.log'),
     },
   };
 
