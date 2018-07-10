@@ -1,5 +1,5 @@
 {
-  "name": "egg-schedule",
+  "name": "egg-lock-schedule",
   "version": "1.0.0",
   "description": "schedule plugin for egg, support corn job,schedule lock.",
   "eggPlugin": {
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/misterapp/egg-schedule.git"
+    "url": "https://github.com/misterapp/egg-lock-schedule.git"
   },
   "keywords": [
     "egg",
