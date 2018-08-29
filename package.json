@@ -1,5 +1,5 @@
 {
-  "name": "egg-schedule",
+  "name": "egg-lock-schedule",
   "version": "1.0.0",
   "description": "schedule plugin for egg, support corn job,schedule lock.",
   "eggPlugin": {
