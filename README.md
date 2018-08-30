@@ -1,4 +1,4 @@
-# egg-lock-schedule
+# egg-schedule
 
 [![NPM version][npm-image]][npm-url]
 [![build status][travis-image]][travis-url]
@@ -7,22 +7,22 @@
 [![Known Vulnerabilities][snyk-image]][snyk-url]
 [![npm download][download-image]][download-url]
 
-[npm-image]: https://img.shields.io/npm/v/egg-lock-schedule.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/egg-lock-schedule
-[travis-image]: https://img.shields.io/travis/eggjs/egg-lock-schedule.svg?style=flat-square
-[travis-url]: https://travis-ci.org/eggjs/egg-lock-schedule
-[codecov-image]: https://codecov.io/github/eggjs/egg-lock-schedule/coverage.svg?branch=master
-[codecov-url]: https://codecov.io/github/eggjs/egg-lock-schedule?branch=master
-[david-image]: https://img.shields.io/david/eggjs/egg-lock-schedule.svg?style=flat-square
-[david-url]: https://david-dm.org/eggjs/egg-lock-schedule
-[snyk-image]: https://snyk.io/test/npm/egg-lock-schedule/badge.svg?style=flat-square
-[snyk-url]: https://snyk.io/test/npm/egg-lock-schedule
-[download-image]: https://img.shields.io/npm/dm/egg-lock-schedule.svg?style=flat-square
-[download-url]: https://npmjs.org/package/egg-lock-schedule
+[npm-image]: https://img.shields.io/npm/v/egg-schedule.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/egg-schedule
+[travis-image]: https://img.shields.io/travis/eggjs/egg-schedule.svg?style=flat-square
+[travis-url]: https://travis-ci.org/eggjs/egg-schedule
+[codecov-image]: https://codecov.io/github/eggjs/egg-schedule/coverage.svg?branch=master
+[codecov-url]: https://codecov.io/github/eggjs/egg-schedule?branch=master
+[david-image]: https://img.shields.io/david/eggjs/egg-schedule.svg?style=flat-square
+[david-url]: https://david-dm.org/eggjs/egg-schedule
+[snyk-image]: https://snyk.io/test/npm/egg-schedule/badge.svg?style=flat-square
+[snyk-url]: https://snyk.io/test/npm/egg-schedule
+[download-image]: https://img.shields.io/npm/dm/egg-schedule.svg?style=flat-square
+[download-url]: https://npmjs.org/package/egg-schedule
 
 A schedule plugin for egg. It supports two scheduler types, `worker` and `all`, and can be extended by other plugins.
 
-`egg-lock-schedule` has been built-in for egg. It is enabled by default.
+`egg-schedule` has been built-in for egg. It is enabled by default.
 
 ## Usage
 
@@ -76,7 +76,7 @@ exports.task = async function (ctx) {
 
 ## Overview
 
-`egg-lock-schedule` supports both time-based scheduling and interval-based scheduling.
+`egg-schedule` supports both time-based scheduling and interval-based scheduling.
 
 Schedule decision is being made by `agent` process. `agent` triggers a task and sends message to `worker` process. Then, one or all `worker` process(es) execute the task based on schedule type.
 
@@ -237,21 +237,21 @@ module.exports = app => {
 
 ## Logging
 
-See `${appInfo.root}/logs/{app_name}/egg-lock-schedule.log` which provided by [config.customLogger.scheduleLogger](https://github.com/eggjs/egg-lock-schedule/blob/master/config/config.default.js).
+See `${appInfo.root}/logs/{app_name}/egg-schedule.log` which provided by [config.customLogger.scheduleLogger](https://github.com/eggjs/egg-schedule/blob/master/config/config.default.js).
 
 ```js
 // config/config.default.js
 config.customLogger = {
   scheduleLogger: {
     // consoleLevel: 'NONE',
-    // file: path.join(appInfo.root, 'logs', appInfo.name, 'egg-lock-schedule.log'),
+    // file: path.join(appInfo.root, 'logs', appInfo.name, 'egg-schedule.log'),
   },
 };
 ```
 
 ## Testing
 
-`app.runSchedule(scheduleName)` is provided by `egg-lock-schedule` plugin only for test purpose.
+`app.runSchedule(scheduleName)` is provided by `egg-schedule` plugin only for test purpose.
 
 Example:
 
@@ -268,4 +268,4 @@ Please open an issue [here](https://github.com/eggjs/egg/issues).
 
 ## License
 
-[MIT](https://github.com/eggjs/egg-lock-schedule/blob/master/LICENSE)
+[MIT](https://github.com/eggjs/egg-schedule/blob/master/LICENSE)

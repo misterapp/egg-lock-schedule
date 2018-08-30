@@ -177,7 +177,7 @@ describe('test/schedule.test.js', () => {
       app = mm.cluster({ baseDir: 'scheduleError', workers: 2 });
       await app.ready();
       await sleep(1000);
-      assert(/\[egg-schedule\] schedule\.interval or schedule\.cron or schedule\.immediate must be present/.test(getErrorLogContent('scheduleError')));
+      assert(/\[egg-lock-schedule\] schedule\.interval or schedule\.cron or schedule\.immediate must be present/.test(getErrorLogContent('scheduleError')));
     });
   });
 
@@ -378,7 +378,7 @@ function getAgentLogContent(name) {
 }
 
 function getScheduleLogContent(name) {
-  const logPath = path.join(__dirname, 'fixtures', name, 'logs', name, 'egg-schedule.log');
+  const logPath = path.join(__dirname, 'fixtures', name, 'logs', name, 'egg-lock-schedule.log');
   return fs.readFileSync(logPath, 'utf8');
 }
 
